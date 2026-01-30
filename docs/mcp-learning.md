@@ -183,6 +183,51 @@ claude mcp remove <server>   # Remove
 
 ---
 
+## Session 2 Key Learnings (Context Engineering)
+
+### Context Cost Problem
+- MCP tools consume **8-17k tokens** even when not being used
+- Default threshold: 10% of context window
+
+### Solution: Tool Search
+```json
+// ~/.claude/settings.json
+{
+  "env": {
+    "ENABLE_TOOL_SEARCH": "auto:5"
+  }
+}
+```
+
+| Setting | Behavior |
+|---------|----------|
+| `auto` | Defer when >10% context (default) |
+| `auto:5` | Defer when >5% context |
+| `true` | Always defer, search on-demand |
+| `false` | Load all upfront |
+
+### How Tool Search Works
+```
+Before: All MCP tools loaded → 17k tokens in context
+After:  MCPSearch tool only → ~500 tokens
+        Tools load on-demand when needed
+```
+
+### VSCode Extension Limitation
+- **HTTP MCPs**: Work perfectly (GitHub, etc.)
+- **stdio MCPs**: May show "connected" but tools don't inject
+- **Workaround**: Use CLI (`claude` command) for stdio MCPs
+
+### Popular MCPs Worth Adding
+| MCP | Type | Install |
+|-----|------|---------|
+| Sentry | HTTP | `claude mcp add --transport http sentry https://mcp.sentry.dev/mcp` |
+| Linear | HTTP | `claude mcp add --transport http linear https://mcp.linear.app/mcp` |
+| Atlassian | HTTP | `claude mcp add --transport http atlassian https://mcp.atlassian.com/v1/mcp` |
+| Hugging Face | HTTP | `claude mcp add --transport http hugging-face https://huggingface.co/mcp` |
+
+---
+
 ## Resources
 - MCP Docs: https://code.claude.com/docs/en/mcp
 - GitHub MCP: https://github.com/github/github-mcp-server

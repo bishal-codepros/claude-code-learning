@@ -13,6 +13,8 @@ Incremental learning guide for mastering Claude Code. No complete upfront plan -
 - [x] Project setup
 - [x] MCP Deep Dive - Session 1 COMPLETED
 - [x] MCP Context Engineering - Session 2 COMPLETED
+- [x] Skills & Commands - Session 3 COMPLETED
+- [x] Hooks - Session 4 COMPLETED
 
 ## MCP Learning Summary (Session 1)
 
@@ -81,13 +83,120 @@ claude mcp remove <name>
 Context7 (docs) → GitHub (issue comment) ✅ Works!
 ```
 
-## Next Learning Topics
-- [ ] **Hooks** - Pre/post tool execution automation
-- [ ] **Skills** - Custom slash commands
-- [ ] **Plugins** - Extend Claude Code capabilities
-- [ ] **Sub-agents** - Task delegation patterns
-- [ ] **PR Review Workflow** - Code review with Claude
-- [ ] **Build Custom MCP** - Create your own MCP server
+## Skills & Commands (Session 3)
+
+### Key Learnings
+1. **Skills = Custom slash commands** - Invoke with `/skill-name`
+2. **Auto-discovery** - Claude automatically detects skills from folders
+3. **Storage locations**:
+   - `~/.claude/commands/*.md` → Simple single-file commands
+   - `~/.claude/skills/*/SKILL.md` → Complex skills with resources
+   - Plugins → Community skills (auto-loaded)
+
+### Skill Structure
+```markdown
+---
+name: skill-name
+description: "When to use this skill"
+---
+# Instructions here
+```
+
+### Skills Created
+| Skill | Purpose | Location |
+|-------|---------|----------|
+| `thinking` | Truth-seeking Socratic response style | ~/.claude/commands/ |
+| `pattern-seeker` | Identify user's subconscious patterns | ~/.claude/commands/ |
+
+### Advanced Skills (with resources)
+```
+skills/my-skill/
+├── SKILL.md       ← Required
+├── scripts/       ← Executable code
+├── references/    ← Documentation
+└── assets/        ← Templates
+```
+
+### Superpowers Plugin - Key Skills
+| Skill | Use When |
+|-------|----------|
+| `superpowers:brainstorming` | Before any new feature |
+| `superpowers:systematic-debugging` | Any bug/error fix |
+| `superpowers:test-driven-development` | Writing code with tests |
+| `superpowers:verification-before-completion` | Before commit/PR |
+
+## Hooks (Session 4)
+
+### Key Learnings
+1. **Hook = Automation at lifecycle points** - Run code before/after tool execution
+2. **3 Hook Types**:
+   - `command` → Run script (PowerShell, Bash, Node, Python)
+   - `prompt` → LLM evaluates yes/no decision
+   - `agent` → LLM + tools (Read, Grep) for complex verification
+3. **Matcher = Tool name only** - Not arguments! Filter arguments inside script
+4. **Script receives JSON stdin** - `tool_input.command`, `tool_name`, etc.
+5. **Script outputs JSON stdout** - `permissionDecision: "deny"` to block
+
+### Hook Events
+| Event | When | Can Block? |
+|-------|------|------------|
+| `SessionStart` | Session begins | No |
+| `PreToolUse` | Before tool runs | **Yes** |
+| `PostToolUse` | After tool succeeds | No |
+| `Stop` | Claude finishes responding | Yes (force continue) |
+
+### Stop Hook Behavior
+- Does NOT regenerate response (user already saw it)
+- `{ok: false}` = Claude **continues** with reason as guidance
+- `{ok: true}` = Claude **stops**
+
+### Hooks in Skills
+```yaml
+---
+name: my-skill
+hooks:
+  Stop:
+    - hooks:
+        - type: prompt
+          prompt: "Verify quality..."
+---
+```
+**Caution**: Multiple skill hooks can accumulate and conflict!
+
+### Files Created
+```
+~/.claude/hooks/
+├── block-rm-rf.ps1   ← PreToolUse: blocks rm -rf commands
+└── log-bash.ps1      ← PostToolUse: logs Bash completion
+```
+
+### Configuration
+```json
+// ~/.claude/settings.json
+{
+  "hooks": {
+    "PreToolUse": [{
+      "matcher": "Bash",
+      "hooks": [{
+        "type": "command",
+        "command": "powershell -File script.ps1"
+      }]
+    }]
+  }
+}
+```
+
+### Windows Issue (Known Bug)
+- Superpowers plugin SessionStart hook fails
+- Cause: `.sh` script + Windows backslash paths
+- Status: [Issue #21468](https://github.com/anthropics/claude-code/issues/21468) open
+- Workaround: Ignore error, superpowers skills still work
+
+## Next Learning Topics (Priority Order)
+1. [ ] **Sub-agents** - Task delegation patterns
+2. [ ] **Plugins Deep Dive** - Create/publish plugins
+3. [ ] **PR Review Workflow** - Code review with Claude
+4. [ ] **Build Custom MCP** - Create your own MCP server
 
 ## Instructions for Claude
 - Help user learn Claude Code features incrementally

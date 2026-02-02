@@ -256,6 +256,37 @@ Baseline screenshot → Code change → Current screenshot → Compare → GitHu
 3. Claude's vision can compare images for visual diffs
 4. Skills can orchestrate multiple MCPs together
 
+## Project 3: PR Review Assistant (Session 5)
+
+### What We Built
+- **Goal**: Review PRs, analyze code, submit feedback to GitHub
+- **Approach**: Custom skill + GitHub MCP
+
+### Skill Created
+- `/review-pr <number>` - Analyze PR and show review
+- `/review-pr <number> --submit` - Submit review to GitHub
+
+### GitHub MCP Tools Used
+| Tool | Purpose |
+|------|---------|
+| `pull_request_read` | Get PR details, diff, files |
+| `pull_request_review_write` | Submit APPROVE/COMMENT/REQUEST_CHANGES |
+| `create_pull_request` | Create PR from branch |
+| `merge_pull_request` | Merge PR |
+
+### Plugin Skills Comparison
+| Skill | Best For |
+|-------|----------|
+| `code-review:code-review` | Production PRs - 5 parallel agents, thorough |
+| `superpowers:requesting-code-review` | Plan-based work - validates against requirements |
+| `/review-pr` (ours) | Quick reviews - fast, GitHub-native |
+
+### Key Learnings
+1. GitHub MCP provides full PR lifecycle control
+2. Multi-agent reviews catch more issues but cost more
+3. Custom skills can be simpler for specific workflows
+4. `--submit` flag pattern for optional actions
+
 ## Next Learning Topics (Priority Order)
 1. [ ] **Sub-agents** - Task delegation patterns
 2. [ ] **Plugins Deep Dive** - Create/publish plugins

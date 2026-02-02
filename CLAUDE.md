@@ -217,6 +217,13 @@ hooks:
 - Command hook blocking early saves subsequent hook calls
 - Prompt filtering happens IN the prompt logic, not matcher
 
+### Prompt Wording Insight
+```
+❌ "DENY only if clearly low quality"  → LLM lenient
+✅ "DENY unless follows ALL rules"     → LLM strict
+```
+"Deny bad" vs "Allow only good" = same logic, different LLM interpretation.
+
 ### Files Created
 - `~/.claude/hooks/enforce-commit-format.ps1` (PowerShell regex version - backup)
 

@@ -287,6 +287,42 @@ Baseline screenshot → Code change → Current screenshot → Compare → GitHu
 3. Custom skills can be simpler for specific workflows
 4. `--submit` flag pattern for optional actions
 
+## Project 4: Auto-changelog Generator (Session 6)
+
+### What We Built
+- **Goal**: Generate changelog from git commits, update CHANGELOG.md
+- **Approach**: Manual skill (better than hook-per-commit noise)
+
+### Skill Created
+- `/changelog` - Generate changelog since last tag
+- `/changelog --version v1.0.0 --release` - Create GitHub release
+
+### Design Decision: Manual > Automatic
+| Approach | Issue |
+|----------|-------|
+| Hook on every commit | ❌ Too noisy, impractical |
+| Hook on PR merge | ⚠️ Complex detection |
+| Manual skill | ✅ Simple, controlled, on-demand |
+
+### Workflow
+```
+Manual: /changelog
+    ↓
+Parse git log (conventional commits)
+    ↓
+Group by type (feat/fix/docs)
+    ↓
+Update CHANGELOG.md
+    ↓
+Optional: Create GitHub release
+```
+
+### Key Learnings
+1. **Reuse over reinvent** - Always check existing skills first
+2. **Practicality matters** - Automatic isn't always better
+3. **Manual control** - Sometimes the best trigger is "when I want it"
+4. **Conventional commits** - Enable automation like this
+
 ## Next Learning Topics (Priority Order)
 1. [ ] **Sub-agents** - Task delegation patterns
 2. [ ] **Plugins Deep Dive** - Create/publish plugins

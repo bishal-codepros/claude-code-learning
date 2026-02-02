@@ -227,6 +227,35 @@ hooks:
 ### Files Created
 - `~/.claude/hooks/enforce-commit-format.ps1` (PowerShell regex version - backup)
 
+## Project 2: Visual Regression Checker (Session 5)
+
+### What We Built
+- **Goal**: Capture UI screenshots, detect visual changes, auto-create GitHub issues
+- **Approach**: Chrome DevTools MCP + GitHub MCP + Custom Skill
+
+### Workflow
+```
+Baseline screenshot → Code change → Current screenshot → Compare → GitHub issue
+```
+
+### Tools Used
+| MCP Tool | Purpose |
+|----------|---------|
+| `mcp__chrome-devtools__new_page` | Open URL in browser |
+| `mcp__chrome-devtools__navigate_page` | Reload with cache bypass |
+| `mcp__chrome-devtools__take_screenshot` | Capture full page screenshot |
+| `mcp__github__issue_write` | Create visual regression issue |
+
+### Skill Created
+- `/visual-check` - Automates the entire visual regression workflow
+- Location: `~/.claude/commands/visual-check.md`
+
+### Key Learnings
+1. Chrome DevTools MCP requires Chrome with remote debugging
+2. Screenshots can be saved to file path directly
+3. Claude's vision can compare images for visual diffs
+4. Skills can orchestrate multiple MCPs together
+
 ## Next Learning Topics (Priority Order)
 1. [ ] **Sub-agents** - Task delegation patterns
 2. [ ] **Plugins Deep Dive** - Create/publish plugins

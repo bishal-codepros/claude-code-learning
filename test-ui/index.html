@@ -38,7 +38,16 @@
             cursor: pointer;
         }
         .btn:hover {
-            background: #0056b3;
+            background: #c82333;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .card-footer {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #eee;
+            font-size: 12px;
+            color: #999;
         }
     </style>
 </head>
@@ -47,6 +56,9 @@
         <h2>Welcome</h2>
         <p>This is a test component for visual regression testing.</p>
         <button class="btn">Click Me</button>
+        <div class="card-footer">
+            Last updated: 2026-02-02
+        </div>
     </div>
 </body>
 </html>

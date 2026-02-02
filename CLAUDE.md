@@ -192,6 +192,34 @@ hooks:
 - Status: [Issue #21468](https://github.com/anthropics/claude-code/issues/21468) open
 - Workaround: Ignore error, superpowers skills still work
 
+## Project 1: Commit Message Enforcer (Session 5)
+
+### What We Built
+- **Goal**: Block bad commit messages using hooks
+- **Approach**: Prompt hook with LLM evaluation (not just regex)
+
+### Key Insight
+- Regex = structure check (format milyo ki nai)
+- LLM = semantic check (meaning, quality, clarity)
+- Prompt hooks use fast/cheap model - negligible overhead
+
+### Hook Configuration
+```json
+{
+  "type": "prompt",
+  "prompt": "If this is a git commit command, evaluate the commit message. ALLOW if not a git commit. For git commits, check: (1) Uses imperative mood, (2) Descriptive, (3) Not vague, (4) Conventional commits format. DENY only if clearly low quality."
+}
+```
+
+### Architecture Learning
+- Matcher = tool name only (e.g., "Bash"), not command content
+- Hooks run in sequence, can't conditionally skip
+- Command hook blocking early saves subsequent hook calls
+- Prompt filtering happens IN the prompt logic, not matcher
+
+### Files Created
+- `~/.claude/hooks/enforce-commit-format.ps1` (PowerShell regex version - backup)
+
 ## Next Learning Topics (Priority Order)
 1. [ ] **Sub-agents** - Task delegation patterns
 2. [ ] **Plugins Deep Dive** - Create/publish plugins
